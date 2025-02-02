@@ -1,0 +1,362 @@
+.meeting-notes {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.note-section {
+  margin-bottom: 16px;
+  line-height: 1.6;
+  color: #16191f;
+}
+
+.note-section.header {
+  font-size: 1.2em;
+  font-weight: 600;
+  color: #0972d3;
+  margin-top: 24px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e9ebed;
+}
+
+.note-section.content {
+  padding-left: 16px;
+  position: relative;
+}
+
+.note-section.content::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #0972d3;
+}
+
+/* First header doesn't need top margin */
+.note-section.header:first-child {
+  margin-top: 0;
+}
+
+/* Add some hover effects */
+.note-section:hover {
+  background-color: #f6f7f9;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.notes-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.note-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.note-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.note-card-header {
+  color: #0972d3;
+  font-size: 1.2em;
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e9ebed;
+}
+
+.note-card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.note-card-list li {
+  padding: 8px 0;
+  position: relative;
+  padding-left: 20px;
+  line-height: 1.6;
+}
+
+.note-card-list li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: #0972d3;
+}
+
+.timeline-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  position: relative;
+}
+
+.timeline-container::before {
+  content: '';
+  position: absolute;
+  left: 50px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #0972d3;
+}
+
+.timeline-item {
+  margin-bottom: 30px;
+  position: relative;
+  padding-left: 70px;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: 44px;
+  top: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #0972d3;
+  border: 2px solid white;
+  box-shadow: 0 0 0 2px #0972d3;
+}
+
+.timeline-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.timeline-content::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 10px;
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 8px solid white;
+}
+
+.timeline-header {
+  color: #0972d3;
+  margin: 0 0 10px 0;
+  font-size: 1.2em;
+}
+
+.timeline-text {
+  margin: 0;
+  line-height: 1.6;
+  color: #16191f;
+}
+
+.timeline-item:hover .timeline-content {
+  transform: translateX(5px);
+  transition: transform 0.2s ease;
+}
+
+.timeline-item:hover .timeline-dot {
+  transform: scale(1.2);
+  transition: transform 0.2s ease;
+}
+
+.document-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.document {
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.section {
+  margin-bottom: 32px;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.section-header {
+  color: #16191f;
+  font-size: 1.4em;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e9ebed;
+}
+
+.section-content {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.section-content li {
+  position: relative;
+  padding: 8px 0 8px 24px;
+  line-height: 1.6;
+  color: #16191f;
+}
+
+.section-content li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 16px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #0972d3;
+}
+
+.section-content li:hover {
+  background-color: #f6f7f9;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+@media (max-width: 600px) {
+  .document {
+    padding: 24px;
+  }
+  
+  .section-header {
+    font-size: 1.2em;
+  }
+}
+
+.notion-container {
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, 'Apple Color Emoji', Arial, sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+
+.notes-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.notion-page {
+  background: white;
+  padding: 32px 48px;
+  border-radius: 12px;
+  box-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, 
+              rgba(15, 15, 15, 0.1) 0px 3px 6px, 
+              rgba(15, 15, 15, 0.2) 0px 9px 24px;
+  margin-top: 20px;
+}
+
+.notion-block {
+  margin-bottom: 28px;
+  opacity: 1;
+  transition: opacity 0.1s ease-in;
+}
+
+.notion-block:hover {
+  opacity: 0.7;
+}
+
+.notion-heading {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 3px 2px;
+}
+
+.notion-heading-icon {
+  margin-right: 12px;
+  font-size: 1.4em;
+}
+
+.notion-heading h2 {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.5em;
+  color: rgb(55, 53, 47);
+  padding: 3px 2px;
+}
+
+.notion-content {
+  margin-left: 34px;
+}
+
+.notion-list-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 3px 2px;
+  margin: 2px 0;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background 20ms ease-in 0s;
+}
+
+.notion-list-item:hover {
+  background: rgba(55, 53, 47, 0.08);
+}
+
+.notion-bullet {
+  color: rgb(55, 53, 47);
+  margin-right: 8px;
+  margin-top: 1px;
+}
+
+.notion-text {
+  color: rgb(55, 53, 47);
+  font-size: 16px;
+  line-height: 1.5;
+  min-height: 24px;
+  flex: 1;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .notion-page {
+    padding: 24px;
+    margin: 0 16px;
+  }
+
+  .notion-heading h2 {
+    font-size: 1.3em;
+  }
+
+  .notion-content {
+    margin-left: 24px;
+  }
+}
+
+/* Override dark mode to maintain light theme */
+@media (prefers-color-scheme: dark) {
+  .notion-page {
+    background: white;
+    box-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px, 
+                rgba(15, 15, 15, 0.1) 0px 3px 6px, 
+                rgba(15, 15, 15, 0.2) 0px 9px 24px;
+  }
+
+  .notion-heading h2,
+  .notion-text,
+  .notion-bullet {
+    color: rgb(55, 53, 47);
+  }
+
+  .notion-list-item:hover {
+    background: rgba(55, 53, 47, 0.08);
+  }
+} 
