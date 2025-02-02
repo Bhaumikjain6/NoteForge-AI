@@ -10,19 +10,22 @@ import {
   FileUpload,
   Input,
   FormField,
+  StatusIndicatorProps,
 } from '@cloudscape-design/components';
 import { useVideo } from '../context/VideoContext';
 import { uploadToS3, startTranscriptionJob, pollTranscriptionStatus, deleteFromS3, getNotes } from '../services/aws';
 import type { Video } from '../context/VideoContext';
 
 export default function VideoList() {
-  const { videos, setSelectedVideo, selectedVideo, addVideo, isLoading, updateVideoStatus, deleteVideo } = useVideo();
+  const { videos, setSelectedVideo, selectedVideo, addVideo, isLoading, updateVideoStatus, deleteVideo, setIsNotesLoading, setNoteLoadingError } = useVideo();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [meetingName, setMeetingName] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [showNameError, setShowNameError] = useState(false);
 
+  const selectedItems = React.useState<Video[]>([]);
+  
   const handleUpload = async () => {
     if (!file || !meetingName.trim()) {
       setShowNameError(true);
@@ -68,12 +71,12 @@ export default function VideoList() {
     setShowNameError(false);
   };
 
-  const handleDelete = async () => {
-    if (!selectedVideo) return;
+  const handleDelete = async (video: Video | null) => {
+    if (!video) return;
     
     try {
-      await deleteFromS3(selectedVideo.id, selectedVideo.name);
-      deleteVideo(selectedVideo.id);
+      await deleteFromS3(video.id, video.name);
+      deleteVideo(video.id);
       setSelectedVideo(null);
     } catch (error) {
       console.error('Failed to delete video:', error);
@@ -83,75 +86,88 @@ export default function VideoList() {
 
   const handleViewNotes = async (video: Video) => {
     try {
+      setIsNotesLoading(true);
+      setNoteLoadingError(null);
       const notes = await getNotes(video.id);
-      updateVideoStatus(video.id, video.status, notes);
       setSelectedVideo({ ...video, notes });
     } catch (error) {
-      console.error('Failed to get notes:', error);
-      // Optionally add error handling UI here
+      console.error('Error fetching notes:', error);
+      setNoteLoadingError('Failed to generate notes. Please try again.');
+    } finally {
+      setIsNotesLoading(false);
     }
   };
 
-  const columns = [
-    {
-      id: 'name',
-      header: 'Video Name',
-      cell: (item: Video) => item.name,
-      sortingField: 'name',
+  const tableDefinition = {
+    header: <Header 
+      variant="h2" 
+      counter={`(${videos.length})`}
+      actions={
+        <SpaceBetween direction="horizontal" size="xs">
+          <Button
+            onClick={() => handleViewNotes(selectedItems[0][0])}
+            disabled={selectedItems[0].length !== 1 || selectedItems[0][0]?.status !== 'completed'}
+            iconName="status-info"
+          >
+            View Notes
+          </Button>
+          <Button
+            onClick={() => handleDelete(selectedItems[0][0])}
+            disabled={selectedItems[0].length !== 1}
+            iconName="remove"
+          >
+            Delete
+          </Button>
+          <Button
+            onClick={() => setIsModalOpen(true)}
+            variant="primary"
+            iconName="upload"
+          >
+            Upload Video
+          </Button>
+        </SpaceBetween>
+      }
+    >
+      Videos
+    </Header>,
+    columnDefinitions: [
+      {
+        id: 'name',
+        header: 'Name',
+        cell: (item: Video) => item.name,
+        sortingField: 'name'
+      },
+      {
+        id: 'uploadDate',
+        header: 'Upload Date',
+        cell: (item: Video) => new Date(item.uploadDate).toLocaleDateString(),
+        sortingField: 'uploadDate'
+      },
+      {
+        id: 'status',
+        header: 'Status',
+        cell: (item: Video) => (
+          <StatusIndicator type={getStatusType(item.status)}>
+            {item.status}
+          </StatusIndicator>
+        )
+      }
+    ],
+    selectionType: "single" as const,
+    onSelectionChange: ({ detail }: { detail: { selectedItems: Video[] } }) => {
+      selectedItems[1](detail.selectedItems);
     },
-    {
-      id: 'uploadDate',
-      header: 'Upload Date',
-      cell: (item: Video) => new Date(item.uploadDate).toLocaleString(),
-      sortingField: 'uploadDate',
-    },
-    {
-      id: 'status',
-      header: 'Status',
-      cell: (item: Video) => (
-        <StatusIndicator type={
-          item.status === 'completed' ? 'success' :
-          item.status === 'processing' ? 'in-progress' :
-          'error'
-        }>
-          {item.status}
-        </StatusIndicator>
-      ),
-    }
-  ];
+    selectedItems: selectedItems[0]
+  };
 
   return (
     <>
       <Table
+        {...tableDefinition}
+        items={videos}
         loading={isLoading}
-        header={
-          <Header
-            variant="h2"
-            actions={
-              <SpaceBetween direction="horizontal" size="xs">
-                <Button onClick={() => setIsModalOpen(true)}>
-                  Upload Video
-                </Button>
-                <Button 
-                  onClick={() => selectedVideo && handleViewNotes(selectedVideo)}
-                  disabled={!selectedVideo || selectedVideo.status !== 'completed'}
-                  variant="normal"
-                >
-                  View Notes
-                </Button>
-                <Button 
-                  onClick={handleDelete}
-                  disabled={!selectedVideo}
-                  variant="normal"
-                >
-                  Delete
-                </Button>
-              </SpaceBetween>
-            }
-          >
-            Uploaded Videos
-          </Header>
-        }
+        loadingText="Loading videos..."
+        trackBy="id"
         empty={
           <Box
             margin={{ vertical: "xs" }}
@@ -162,13 +178,6 @@ export default function VideoList() {
               <p>No Videos Uploaded. Please upload a video to get started.</p>
             </SpaceBetween>
           </Box>
-        }
-        columnDefinitions={columns}
-        items={videos}
-        selectionType="single"
-        selectedItems={selectedVideo ? [selectedVideo] : []}
-        onSelectionChange={({ detail }) => 
-          setSelectedVideo(detail.selectedItems[0] || null)
         }
       />
 
@@ -219,4 +228,18 @@ export default function VideoList() {
       </Modal>
     </>
   );
+}
+
+// Helper function to determine status indicator type
+function getStatusType(status: string): StatusIndicatorProps.Type {
+  switch (status) {
+    case 'completed':
+      return 'success';
+    case 'processing':
+      return 'in-progress';
+    case 'failed':
+      return 'error';
+    default:
+      return 'pending';
+  }
 } 

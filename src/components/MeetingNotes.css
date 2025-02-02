@@ -359,4 +359,92 @@
   .notion-list-item:hover {
     background: rgba(55, 53, 47, 0.08);
   }
+}
+
+/* Add to your existing CSS */
+.summary-block {
+  background-color: #f7f9fc;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.summary-text {
+  font-size: 1.1em;
+  line-height: 1.6;
+  color: #2f3941;
+}
+
+.action-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 6px;
+  margin: 8px 0;
+  background: #f8f9fa;
+}
+
+.action-item-content {
+  flex: 1;
+}
+
+.action-item-task {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.action-item-owner,
+.action-item-due {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 4px;
+}
+
+.decision-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.decision-icon {
+  font-size: 1.2em;
+}
+
+.decision-text {
+  flex: 1;
+  line-height: 1.5;
+}
+
+/* Add hover effects */
+.action-item:hover,
+.decision-item:hover {
+  background-color: #f1f3f5;
+  transition: background-color 0.2s ease;
+}
+
+.blocker-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 6px;
+  margin: 8px 0;
+  background: #fff5f5;
+}
+
+.blocker-icon {
+  font-size: 1.2em;
+}
+
+.blocker-text {
+  flex: 1;
+  line-height: 1.5;
+  color: #e53e3e;
+}
+
+.blocker-item:hover {
+  background-color: #fff0f0;
+  transition: background-color 0.2s ease;
 } 

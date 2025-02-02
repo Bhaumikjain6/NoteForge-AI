@@ -7,6 +7,21 @@ export interface Video {
   uploadDate: string;
   status: 'processing' | 'completed' | 'failed';
   notes?: string;
+  analysis?: {
+    sentiment: string;
+    actionItems: Array<{
+      task: string;
+      owner?: string;
+      dueDate?: string;
+      priority?: 'high' | 'medium' | 'low';
+    }>;
+    decisions: Array<{
+      decision: string;
+      context?: string;
+      owner?: string;
+    }>;
+    insights: Array<string>;
+  };
 }
 
 interface VideoContextType {
@@ -17,14 +32,20 @@ interface VideoContextType {
   updateVideoStatus: (id: string, status: Video['status'], notes?: string) => void;
   isLoading: boolean;
   deleteVideo: (id: string) => void;
+  isNotesLoading: boolean;
+  setIsNotesLoading: (loading: boolean) => void;
+  noteLoadingError: string | null;
+  setNoteLoadingError: (error: string | null) => void;
 }
 
-const VideoContext = createContext<VideoContextType | undefined>(undefined);
+export const VideoContext = createContext<VideoContextType | undefined>(undefined);
 
 export function VideoProvider({ children }: { children: React.ReactNode }) {
   const [videos, setVideos] = useState<Video[]>([]);
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isNotesLoading, setIsNotesLoading] = useState(false);
+  const [noteLoadingError, setNoteLoadingError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -65,7 +86,11 @@ export function VideoProvider({ children }: { children: React.ReactNode }) {
       addVideo,
       updateVideoStatus,
       isLoading,
-      deleteVideo
+      deleteVideo,
+      isNotesLoading,
+      setIsNotesLoading,
+      noteLoadingError,
+      setNoteLoadingError
     }}>
       {children}
     </VideoContext.Provider>
