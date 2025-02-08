@@ -79,7 +79,7 @@ interface NotesResponse {
 export async function generateNotes(transcript: string): Promise<string> {
   try {
     const response = await bedrockClient.send(new InvokeModelCommand({
-      modelId: 'anthropic.claude-v2',
+      modelId: 'anthropic.claude-3-5-sonnet-20241022-v2:0',
       contentType: 'application/json',
       accept: 'application/json',
       body: JSON.stringify({
